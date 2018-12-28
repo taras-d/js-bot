@@ -26,6 +26,7 @@ class Bot {
 
         msPassed += ms;
         if (msPassed >= timeout) {
+          clearInterval(timerId);
           rej(new Error(`[Bot.waitFor] element with selector "${sel}" is timed out`));
         }
       }, ms);
