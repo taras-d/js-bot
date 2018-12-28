@@ -1,7 +1,36 @@
 class Bot {
 
   constructor() {
+    this._fns = [];
+  }
 
+  waitMs(ms) {
+    return this._sequence(() => this._waitMs(ms));
+  }
+
+  waitFor(sel, ms, timeout) {
+    return this._sequence(() => this._waitFor(sel, ms, timeout));
+  }
+
+  click(sel) {
+    return this._sequence(() => this._click(sel));
+  }
+
+  input(sel, val) {
+    return this._sequence(() => this._input(sel, val));
+  }
+
+  exec(fn) {
+    return this._sequence(() => {
+      fn();
+      return Promise.resolve();
+    });
+  }
+
+  start() {
+    return this._fns.reduce((cur, next) => {
+      return cur.then(() => next());
+    }, Promise.resolve());
   }
 
   _waitMs(ms) {
@@ -56,6 +85,11 @@ class Bot {
 
   _getEl(sel) {
     return document.querySelector(sel);
+  }
+
+  _sequence(fn) {
+    this._fns.push(fn);
+    return this;
   }
 
 }
