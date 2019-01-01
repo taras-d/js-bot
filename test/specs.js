@@ -16,35 +16,30 @@ describe('Bot', () => {
     }, 200);
   });
 
-  describe('_waitFor', () => {
-    it('_waitFor (element found immediately)', done => {
-      const fakeEl = {};
-      bot._getEl = () => fakeEl;
-
-      bot._waitFor('.btn').then(el => {
-        expect(el).toBe(fakeEl);
+  describe('_waitUntil', () => {
+    it('_waitUntil (result returned immediately)', done => {
+      const result = {};
+      bot._waitUntil(() => result, '.btn').then(res => {
+        expect(res).toBe(result);
         done();
       }); 
     });
 
-    it('_waitFor (element found later)', done => {
-      let fakeEl = null;
-      bot._getEl = () => fakeEl;
+    it('_waitUntil (result returned later)', done => {
+      let result = null;
 
-      setTimeout(() => (fakeEl = {}), 1000);
+      setTimeout(() => (result = {}), 1000);
 
-      bot._waitFor('.btn').then(el => {
-        expect(el).toBe(fakeEl);
+      bot._waitUntil(() => result).then(res => {
+        expect(res).toBe(result);
         done();
       }); 
     });
 
-    it('_waitFor (element not found due to time out)', done => {
-      bot._getEl = () => null;
-
-      bot._waitFor('.btn', 200, 500).then(null, err => {
+    it('_waitUntil (result does not returned in time)', done => {
+      bot._waitUntil(() => null, 200, 500).then(null, err => {
         expect(err).toEqual(jasmine.any(Error));
-        expect(err.message).toBe(`[Bot.waitFor] element with selector ".btn" is timed out`);
+        expect(err.message).toBe(`[Bot.waitUntil] stopped due to time out`);
         done();
       }); 
     });

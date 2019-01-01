@@ -8,8 +8,8 @@ class Bot {
     return this._sequence(() => this._waitMs(ms));
   }
 
-  waitFor(sel, ms, timeout) {
-    return this._sequence(() => this._waitFor(sel, ms, timeout));
+  waitUntil(fn, ms, timeout) {
+    return this._sequence(() => this._waitFor(fn, ms, timeout));
   }
 
   click(sel) {
@@ -37,26 +37,26 @@ class Bot {
     return new Promise(res => setTimeout(res, ms));
   }
 
-  _waitFor(sel, ms = 200, timeout = 5000) {
+  _waitUntil(fn, ms = 200, timeout = 5000) {
     return new Promise((res, rej) => {
-      let el = this._getEl(sel);
-      if (el) {
-        return res(el);
+      let result = fn();
+      if (result) {
+        return res(result);
       }
 
       let msPassed = 0;
       let timerId = setInterval(() => {
-        el = this._getEl(sel);
+        result = fn();
 
-        if (el) {
+        if (result) {
           clearInterval(timerId);
-          res(el);
+          res(result);
         }
 
         msPassed += ms;
         if (msPassed >= timeout) {
           clearInterval(timerId);
-          rej(new Error(`[Bot.waitFor] element with selector "${sel}" is timed out`));
+          rej(new Error(`[Bot.waitUntil] stopped due to time out`));
         }
       }, ms);
     });
