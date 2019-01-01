@@ -2,6 +2,7 @@ class Bot {
 
   constructor() {
     this._fns = [];
+    this._started = false;
   }
 
   waitMs(ms) {
@@ -9,7 +10,7 @@ class Bot {
   }
 
   waitUntil(fn, ms, timeout) {
-    return this._sequence(() => this._waitFor(fn, ms, timeout));
+    return this._sequence(() => this._waitUntil(fn, ms, timeout));
   }
 
   click(sel) {
@@ -28,6 +29,12 @@ class Bot {
   }
 
   start() {
+    if (this._started) {
+      return Promise.reject(new Error('Bot already started'));
+    }
+
+    this._started = true;
+
     return this._fns.reduce((cur, next) => {
       return cur.then(() => next());
     }, Promise.resolve());

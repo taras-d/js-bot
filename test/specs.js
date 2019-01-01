@@ -5,6 +5,30 @@ describe('Bot', () => {
     bot = new Bot();
   });
 
+  describe('start', () => {
+    it('start (not started)', done => {
+      const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
+
+      bot._sequence(fnSpy);
+      bot._sequence(fnSpy);
+      bot._sequence(fnSpy);
+
+      bot.start().then(() => {
+        expect(fnSpy).toHaveBeenCalledTimes(3);
+        done();
+      });
+    });
+
+    it('start (already started)', done => {
+      bot.start();
+      bot.start().then(null, err => {
+        expect(err).toEqual(jasmine.any(Error));
+        expect(err.message).toBe('Bot already started');
+        done();
+      });
+    });
+  });
+
   it('_waitMs', done => {
     const cb = jasmine.createSpy();
 
@@ -103,5 +127,14 @@ describe('Bot', () => {
   it('_getEl', () => {
     expect(bot._getEl('body')).toBe(document.body);
     expect(bot._getEl('buddy')).toBeFalsy();
+  });
+
+  it('_sequence', () => {
+    expect(bot._fns.length).toBe(0);
+
+    bot._sequence(() => {});
+    bot._sequence(() => {});
+
+    expect(bot._fns.length).toBe(2);
   });
 });
