@@ -13,6 +13,12 @@ class Bot {
     return this._sequence(() => this._waitUntil(fn, ms, timeout));
   }
 
+  waitForSel(sel, ms, timeout) {
+    return this._sequence(
+      () => this._waitUntil(() => this._getEl(sel), ms, timeout)
+    );
+  }
+
   click(sel) {
     return this._sequence(() => this._click(sel));
   }
