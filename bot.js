@@ -1,5 +1,4 @@
 class Bot {
-
   constructor() {
     this._fns = [];
     this._started = false;
@@ -13,7 +12,7 @@ class Bot {
     return this._chain(() => this._waitUntil(fn, ms, timeout));
   }
 
-  waitForSel(sel, ms, timeout) {
+  waitFor(sel, ms, timeout) {
     return this._chain(
       () => this._waitUntil(() => this._getEl(sel), ms, timeout)
     );
@@ -81,7 +80,7 @@ class Bot {
       return Promise.reject(new Error(`Element with selector "${sel}" not found`));
     }
 
-    el.dispatchEvent(new Event('click'));
+    el.dispatchEvent(new MouseEvent('click'));
     return Promise.resolve(el);
   }
 
@@ -92,7 +91,7 @@ class Bot {
     }
 
     el.value = val;
-    el.dispatchEvent(new Event('input'));
+    el.dispatchEvent(new KeyboardEvent('input'));
     return Promise.resolve(el);
   }
 
@@ -104,5 +103,4 @@ class Bot {
     this._fns.push(fn);
     return this;
   }
-
 }
