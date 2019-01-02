@@ -69,7 +69,7 @@ class Bot {
         msPassed += ms;
         if (msPassed >= timeout) {
           clearInterval(timerId);
-          rej(new Error(`[Bot.waitUntil] stopped due to time out`));
+          rej(new Error(`Bot "waitUntil" stopped due to time out`));
         }
       }, ms);
     });
@@ -78,7 +78,7 @@ class Bot {
   _click(sel) {
     const el = this._getEl(sel);
     if (!el) {
-      return Promise.reject(new Error(`[Bot.click] element with selector "${sel}" not found`));
+      return Promise.reject(new Error(`Element with selector "${sel}" not found`));
     }
 
     el.dispatchEvent(new Event('click'));
@@ -88,7 +88,7 @@ class Bot {
   _input(sel, val) {
     const el = this._getEl(sel);
     if (!el) {
-      return Promise.reject(new Error(`[Bot.input] element with selector "${sel}" not found`));
+      return Promise.reject(new Error(`Element with selector "${sel}" not found`));
     }
 
     el.value = val;

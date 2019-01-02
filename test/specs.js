@@ -63,7 +63,7 @@ describe('Bot', () => {
     it('_waitUntil (result does not returned in time)', done => {
       bot._waitUntil(() => null, 200, 500).then(null, err => {
         expect(err).toEqual(jasmine.any(Error));
-        expect(err.message).toBe(`[Bot.waitUntil] stopped due to time out`);
+        expect(err.message).toBe(`Bot "waitUntil" stopped due to time out`);
         done();
       }); 
     });
@@ -90,7 +90,7 @@ describe('Bot', () => {
 
       bot._click('.btn').then(null, err => {
         expect(err).toEqual(jasmine.any(Error));
-        expect(err.message).toBe('[Bot.click] element with selector ".btn" not found');
+        expect(err.message).toBe('Element with selector ".btn" not found');
         done();
       });
     });
@@ -118,7 +118,7 @@ describe('Bot', () => {
 
       bot._input('.txt').then(null, err => {
         expect(err).toEqual(jasmine.any(Error));
-        expect(err.message).toBe('[Bot.input] element with selector ".txt" not found');
+        expect(err.message).toBe('Element with selector ".txt" not found');
         done();
       });
     });
