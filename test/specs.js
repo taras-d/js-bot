@@ -6,7 +6,7 @@ describe('Bot', () => {
   });
 
   describe('exec', () => {
-    it('exec (not started)', done => {
+    it('exec (1 time)', done => {
       const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
 
       bot._chain(fnSpy);
@@ -15,6 +15,19 @@ describe('Bot', () => {
 
       bot.exec().then(() => {
         expect(fnSpy).toHaveBeenCalledTimes(3);
+        done();
+      });
+    });
+
+    it('exec (3 times)', done => {
+      const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
+
+      bot._chain(fnSpy);
+      bot._chain(fnSpy);
+      bot._chain(fnSpy);
+
+      bot.exec(3).then(() => {
+        expect(fnSpy).toHaveBeenCalledTimes(9);
         done();
       });
     });
@@ -136,5 +149,11 @@ describe('Bot', () => {
     expect(bot._chain(() => {})).toBe(bot);
 
     expect(bot._fns.length).toBe(2);
+  });
+
+  it('_repeat', () => {
+    expect(bot._repeat(['a', 'b'], 1)).toEqual(['a', 'b']);
+    expect(bot._repeat(['a', 'b'], 2)).toEqual(['a', 'b', 'a', 'b']);
+    expect(bot._repeat(['a', 'b'], 3)).toEqual(['a', 'b', 'a', 'b', 'a', 'b']);
   });
 });

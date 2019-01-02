@@ -1,7 +1,7 @@
 class Bot {
   constructor() {
     this._fns = [];
-    this._started = false;
+    this._pending = false;
   }
 
   waitMs(ms) {
@@ -33,16 +33,20 @@ class Bot {
     });
   }
 
-  exec() {
-    if (this._started) {
+  exec(times = 1) {
+    if (this._pending) {
       return Promise.reject(new Error('Bot already started'));
     }
 
-    this._started = true;
+    this._pending = true;
 
-    return this._fns.reduce((cur, next) => {
-      return cur.then(() => next());
-    }, Promise.resolve());
+    return this._repeat(this._fns, times)
+      .reduce((cur, next) => {
+        return cur.then(() => next());
+      }, Promise.resolve())
+      .then(() => {
+        this._pending = false;
+      });
   }
 
   _waitMs(ms) {
@@ -102,5 +106,16 @@ class Bot {
   _chain(fn) {
     this._fns.push(fn);
     return this;
+  }
+
+  _repeat(arr, times) {
+    let res = arr.slice();
+
+    while (times > 1) {
+      res = res.concat(arr);
+      --times;
+    }
+
+    return res;
   }
 }
