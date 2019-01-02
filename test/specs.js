@@ -5,23 +5,23 @@ describe('Bot', () => {
     bot = new Bot();
   });
 
-  describe('start', () => {
-    it('start (not started)', done => {
+  describe('exec', () => {
+    it('exec (not started)', done => {
       const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
 
-      bot._sequence(fnSpy);
-      bot._sequence(fnSpy);
-      bot._sequence(fnSpy);
+      bot._chain(fnSpy);
+      bot._chain(fnSpy);
+      bot._chain(fnSpy);
 
-      bot.start().then(() => {
+      bot.exec().then(() => {
         expect(fnSpy).toHaveBeenCalledTimes(3);
         done();
       });
     });
 
-    it('start (already started)', done => {
-      bot.start();
-      bot.start().then(null, err => {
+    it('exec (already started)', done => {
+      bot.exec();
+      bot.exec().then(null, err => {
         expect(err).toEqual(jasmine.any(Error));
         expect(err.message).toBe('Bot already started');
         done();
@@ -129,11 +129,11 @@ describe('Bot', () => {
     expect(bot._getEl('buddy')).toBeFalsy();
   });
 
-  it('_sequence', () => {
+  it('_chain', () => {
     expect(bot._fns.length).toBe(0);
 
-    bot._sequence(() => {});
-    bot._sequence(() => {});
+    expect(bot._chain(() => {})).toBe(bot);
+    expect(bot._chain(() => {})).toBe(bot);
 
     expect(bot._fns.length).toBe(2);
   });

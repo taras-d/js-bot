@@ -6,35 +6,35 @@ class Bot {
   }
 
   waitMs(ms) {
-    return this._sequence(() => this._waitMs(ms));
+    return this._chain(() => this._waitMs(ms));
   }
 
   waitUntil(fn, ms, timeout) {
-    return this._sequence(() => this._waitUntil(fn, ms, timeout));
+    return this._chain(() => this._waitUntil(fn, ms, timeout));
   }
 
   waitForSel(sel, ms, timeout) {
-    return this._sequence(
+    return this._chain(
       () => this._waitUntil(() => this._getEl(sel), ms, timeout)
     );
   }
 
   click(sel) {
-    return this._sequence(() => this._click(sel));
+    return this._chain(() => this._click(sel));
   }
 
   input(sel, val) {
-    return this._sequence(() => this._input(sel, val));
+    return this._chain(() => this._input(sel, val));
   }
 
-  exec(fn) {
-    return this._sequence(() => {
+  run(fn) {
+    return this._chain(() => {
       fn();
       return Promise.resolve();
     });
   }
 
-  start() {
+  exec() {
     if (this._started) {
       return Promise.reject(new Error('Bot already started'));
     }
@@ -100,7 +100,7 @@ class Bot {
     return document.querySelector(sel);
   }
 
-  _sequence(fn) {
+  _chain(fn) {
     this._fns.push(fn);
     return this;
   }
