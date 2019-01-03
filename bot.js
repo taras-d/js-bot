@@ -74,7 +74,7 @@ class Bot {
         }
 
         msPassed += ms;
-        if (msPassed >= timeout) {
+        if (timeout && msPassed >= timeout) {
           clearInterval(timerId);
           rej(new Error(`Bot "waitUntil" stopped due to time out`));
         }
