@@ -15,7 +15,7 @@ new Bot()                           // create bot
 ```
 
 ## API
-| method               | description | return |
+| method | description | return |
 | ------ | ----------- | ------ |
 | `waitMs(ms)` | Wait specified amount of milliseconds | _Bot_ |
 | `waitUntil(fn, ms, timeout)` | Wait until function return truthy value | _Bot_ |
@@ -23,4 +23,5 @@ new Bot()                           // create bot
 | `click(el)` | Trigger click event on element | _Bot_ |
 | `input(el, val)` | Trigger input event on element | _Bot_ |
 | `run(fn)` | Run arbitrary code | _Bot_ |
+| `clear()` | Remove all steps | _Bot_ |
 | `exec(times)` | Execute bot step by step | _Promise_ |

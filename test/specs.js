@@ -2,51 +2,82 @@ describe('Bot (public methods)', () => {
   let bot;
   beforeEach(() => bot = new Bot());
 
-  it('chainable methods', () => {
-    bot._chain = jasmine.createSpy().and.returnValue(bot);
-
-    bot.waitMs(100)
-      .waitUntil(() => true)
-      .waitFor('.btn')
-      .click('.btn')
-      .input('.txt')
-      .run(() => {});
-
-    expect(bot._chain).toHaveBeenCalledTimes(6);
+  it('waitMs', () => {
+    bot._chain = jasmine.createSpy();
+    bot.waitMs(100);
+    expect(bot._chain).toHaveBeenCalledWith(jasmine.any(Function));
   });
 
-  it('exec (1 time)', done => {
-    const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
+  it('waitUntil', () => {
+    bot._chain = jasmine.createSpy();
+    bot.waitUntil(() => true);
+    expect(bot._chain).toHaveBeenCalledWith(jasmine.any(Function));
+  });
 
-    bot._chain(fnSpy);
-    bot._chain(fnSpy);
-    bot._chain(fnSpy);
+  it('waitFor', () => {
+    bot._chain = jasmine.createSpy();
+    bot.waitFor('.btn');
+    expect(bot._chain).toHaveBeenCalledWith(jasmine.any(Function));
+  });
 
-    bot.exec().then(() => {
-      expect(fnSpy).toHaveBeenCalledTimes(3);
-      done();
+  it('click', () => {
+    bot._chain = jasmine.createSpy();
+    bot.click('.btn');
+    expect(bot._chain).toHaveBeenCalledWith(jasmine.any(Function));
+  });
+
+  it('input', () => {
+    bot._chain = jasmine.createSpy();
+    bot.input('.txt');
+    expect(bot._chain).toHaveBeenCalledWith(jasmine.any(Function));
+  });
+
+  it('run', () => {
+    bot._chain = jasmine.createSpy();
+    bot.run(() => {});
+    expect(bot._chain).toHaveBeenCalledWith(jasmine.any(Function));
+  });
+
+  it('clear', () => {
+    bot._fns = [() => {}];
+    bot.clear();
+    expect(bot._fns.length).toBe(0);
+  });
+
+  describe('exec', () => {
+    it('exec (1 time)', done => {
+      const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
+
+      bot._chain(fnSpy);
+      bot._chain(fnSpy);
+      bot._chain(fnSpy);
+
+      bot.exec().then(() => {
+        expect(fnSpy).toHaveBeenCalledTimes(3);
+        done();
+      });
     });
-  });
 
-  it('exec (3 times)', done => {
-    const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
+    it('exec (3 times)', done => {
+      const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
 
-    bot._chain(fnSpy);
-    bot._chain(fnSpy);
-    bot._chain(fnSpy);
+      bot._chain(fnSpy);
+      bot._chain(fnSpy);
+      bot._chain(fnSpy);
 
-    bot.exec(3).then(() => {
-      expect(fnSpy).toHaveBeenCalledTimes(9);
-      done();
+      bot.exec(3).then(() => {
+        expect(fnSpy).toHaveBeenCalledTimes(9);
+        done();
+      });
     });
-  });
 
-  it('exec (already started)', done => {
-    bot.exec();
-    bot.exec().then(null, err => {
-      expect(err).toEqual(jasmine.any(Error));
-      expect(err.message).toBe('Bot already started');
-      done();
+    it('exec (already started)', done => {
+      bot.exec();
+      bot.exec().then(null, err => {
+        expect(err).toEqual(jasmine.any(Error));
+        expect(err.message).toBe('Bot already started');
+        done();
+      });
     });
   });
 });

@@ -37,6 +37,11 @@ class Bot {
     });
   }
 
+  clear() {
+    this._fns = [];
+    return this;
+  }
+
   exec(times = 1) {
     if (this._pending) {
       return Promise.reject(new Error('Bot already started'));
@@ -48,7 +53,7 @@ class Bot {
       .reduce((cur, next) => {
         return cur.then(() => next());
       }, Promise.resolve())
-      .then(() => {
+      .finally(() => {
         this._pending = false;
       });
   }
