@@ -32,8 +32,8 @@ class Bot {
 
   run(fn) {
     return this._chain(() => {
-      fn();
-      return Promise.resolve();
+      const returnVal = fn();
+      return returnVal instanceof Promise? returnVal: Promise.resolve();
     });
   }
 
