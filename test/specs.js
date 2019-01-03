@@ -1,46 +1,46 @@
-describe('Bot', () => {
+describe('Bot (public methods', () => {
   let bot;
+  beforeEach(() => bot = new Bot());
 
-  beforeEach(() => {
-    bot = new Bot();
-  });
+  it('exec (1 time)', done => {
+    const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
 
-  describe('exec', () => {
-    it('exec (1 time)', done => {
-      const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
+    bot._chain(fnSpy);
+    bot._chain(fnSpy);
+    bot._chain(fnSpy);
 
-      bot._chain(fnSpy);
-      bot._chain(fnSpy);
-      bot._chain(fnSpy);
-
-      bot.exec().then(() => {
-        expect(fnSpy).toHaveBeenCalledTimes(3);
-        done();
-      });
-    });
-
-    it('exec (3 times)', done => {
-      const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
-
-      bot._chain(fnSpy);
-      bot._chain(fnSpy);
-      bot._chain(fnSpy);
-
-      bot.exec(3).then(() => {
-        expect(fnSpy).toHaveBeenCalledTimes(9);
-        done();
-      });
-    });
-
-    it('exec (already started)', done => {
-      bot.exec();
-      bot.exec().then(null, err => {
-        expect(err).toEqual(jasmine.any(Error));
-        expect(err.message).toBe('Bot already started');
-        done();
-      });
+    bot.exec().then(() => {
+      expect(fnSpy).toHaveBeenCalledTimes(3);
+      done();
     });
   });
+
+  it('exec (3 times)', done => {
+    const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
+
+    bot._chain(fnSpy);
+    bot._chain(fnSpy);
+    bot._chain(fnSpy);
+
+    bot.exec(3).then(() => {
+      expect(fnSpy).toHaveBeenCalledTimes(9);
+      done();
+    });
+  });
+
+  it('exec (already started)', done => {
+    bot.exec();
+    bot.exec().then(null, err => {
+      expect(err).toEqual(jasmine.any(Error));
+      expect(err.message).toBe('Bot already started');
+      done();
+    });
+  });
+});
+
+describe('Bot (private methods)', () => {
+  let bot;
+  beforeEach(() => bot = new Bot());
 
   it('_waitMs', done => {
     const cb = jasmine.createSpy();
@@ -82,56 +82,39 @@ describe('Bot', () => {
     });
   });
 
-  describe('_click', () => {
-    it('_click (element found)', done => {
-      const fakeEl = {
-        dispatchEvent: jasmine.createSpy()
-      };
+  describe('_triggerEvent', () => {
+    it('_triggerEvent (click)', done => {
+      const fakeEl = { dispatchEvent: jasmine.createSpy() };
+      const event = new MouseEvent('click');
       bot._getEl = () => fakeEl;
 
-      bot._click('.btn').then(el => {
+      bot._triggerEvent('.btn', event).then(el => {
         expect(el).toBe(fakeEl);
-        expect(el.dispatchEvent).toHaveBeenCalledWith(
-          jasmine.objectContaining({ type: 'click' })
-        );
+        expect(el.dispatchEvent).toHaveBeenCalledWith(event);
         done();
       });
     });
 
-    it('_click (element not found)', done => {
-      bot._getEl = () => null;
-
-      bot._click('.btn').then(null, err => {
-        expect(err).toEqual(jasmine.any(Error));
-        expect(err.message).toBe('Element with selector ".btn" not found');
-        done();
-      });
-    });
-  });
-
-  describe('_input', () => {
-    it('_input (element found)', done => {
-      const fakeEl = {
-        dispatchEvent: jasmine.createSpy()
-      };
+    it('_triggerEvent (input)', done => {
+      const fakeEl = { dispatchEvent: jasmine.createSpy() };
+      const event = new KeyboardEvent('input');
       bot._getEl = () => fakeEl;
 
-      bot._input('.txt', 'hello').then(el => {
+      bot._triggerEvent('.txt', event, { value: '123' }).then(el => {
         expect(el).toBe(fakeEl);
-        expect(el.value).toBe('hello');
-        expect(el.dispatchEvent).toHaveBeenCalledWith(
-          jasmine.objectContaining({ type: 'input' })
-        );
+        expect(el.value).toBe('123');
+        expect(el.dispatchEvent).toHaveBeenCalledWith(event);
         done();
       });
     });
 
-    it('_input (element not found)', done => {
+    it('_triggerEvent (element not found)', done => {
+      const event = {};
       bot._getEl = () => null;
 
-      bot._input('.txt').then(null, err => {
+      bot._triggerEvent('.btn', event).then(null, err => {
         expect(err).toEqual(jasmine.any(Error));
-        expect(err.message).toBe('Element with selector ".txt" not found');
+        expect(err.message).toBe('Element ".btn" not found');
         done();
       });
     });
@@ -139,7 +122,9 @@ describe('Bot', () => {
 
   it('_getEl', () => {
     expect(bot._getEl('body')).toBe(document.body);
+    expect(bot._getEl(document.body)).toBe(document.body);
     expect(bot._getEl('buddy')).toBeFalsy();
+    expect(bot._getEl(null)).toBeFalsy();
   });
 
   it('_chain', () => {

@@ -19,8 +19,8 @@ new Bot()                           // create bot
 | ------ | ----------- | ------ |
 | `waitMs(ms)` | Wait specified amount of milliseconds | _Bot_ |
 | `waitUntil(fn, ms, timeout)` | Wait until function return truthy value | _Bot_ |
-| `waitFor(sel, ms, timeout)` | Wait for element given by selector to appear in the DOM | _Bot_ |
-| `click(sel)` | Trigger click event on element given by selector | _Bot_ |
-| `input(sel, val)` | Trigger input event on element given by selector | _Bot_ |
+| `waitFor(el, ms, timeout)` | Wait for element to appear in the DOM | _Bot_ |
+| `click(el)` | Trigger click event on element | _Bot_ |
+| `input(el, val)` | Trigger input event on element | _Bot_ |
 | `run(fn)` | Run arbitrary code | _Bot_ |
 | `exec(times)` | Execute bot step by step | _Promise_ |

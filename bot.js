@@ -12,18 +12,22 @@ class Bot {
     return this._chain(() => this._waitUntil(fn, ms, timeout));
   }
 
-  waitFor(sel, ms, timeout) {
+  waitFor(el, ms, timeout) {
     return this._chain(
-      () => this._waitUntil(() => this._getEl(sel), ms, timeout)
+      () => this._waitUntil(() => this._getEl(el), ms, timeout)
     );
   }
 
-  click(sel) {
-    return this._chain(() => this._click(sel));
+  click(el) {
+    return this._chain(() => {
+      return this._triggerEvent(el, new MouseEvent('click'));
+    });
   }
 
-  input(sel, val) {
-    return this._chain(() => this._input(sel, val));
+  input(el, val) {
+    return this._chain(() => {
+      return this._triggerEvent(el, new KeyboardEvent('input'), { value: val })
+    });
   }
 
   run(fn) {
@@ -78,29 +82,23 @@ class Bot {
     });
   }
 
-  _click(sel) {
-    const el = this._getEl(sel);
-    if (!el) {
-      return Promise.reject(new Error(`Element with selector "${sel}" not found`));
+  _triggerEvent(el, event, params) {
+    const target = this._getEl(el);
+    if (!target) {
+      return Promise.reject(new Error(`Element "${el}" not found`));
     }
 
-    el.dispatchEvent(new MouseEvent('click'));
-    return Promise.resolve(el);
-  }
-
-  _input(sel, val) {
-    const el = this._getEl(sel);
-    if (!el) {
-      return Promise.reject(new Error(`Element with selector "${sel}" not found`));
+    if (event.type === 'input' && params) {
+      target.value = params.value;
     }
 
-    el.value = val;
-    el.dispatchEvent(new KeyboardEvent('input'));
-    return Promise.resolve(el);
+    target.dispatchEvent(event);
+
+    return Promise.resolve(target);
   }
 
-  _getEl(sel) {
-    return document.querySelector(sel);
+  _getEl(el) {
+    return typeof el === 'string'? document.querySelector(el): el;
   }
 
   _chain(fn) {
