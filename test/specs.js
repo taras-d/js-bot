@@ -1,6 +1,19 @@
-describe('Bot (public methods', () => {
+describe('Bot (public methods)', () => {
   let bot;
   beforeEach(() => bot = new Bot());
+
+  it('chainable methods', () => {
+    bot._chain = jasmine.createSpy().and.returnValue(bot);
+
+    bot.waitMs(100)
+      .waitUntil(() => true)
+      .waitFor('.btn')
+      .click('.btn')
+      .input('.txt')
+      .run(() => {});
+
+    expect(bot._chain).toHaveBeenCalledTimes(6);
+  });
 
   it('exec (1 time)', done => {
     const fnSpy = jasmine.createSpy().and.returnValue(Promise.resolve());
