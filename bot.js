@@ -105,7 +105,13 @@ class Bot {
   }
 
   _getEl(el) {
-    return typeof el === 'string'? document.querySelector(el): el;
+    if (typeof el === 'string') {
+      return document.querySelector(el);
+    } else if (document.body.contains(el)) {
+      return el;
+    } else {
+      return null;
+    }
   }
 
   _chain(fn) {

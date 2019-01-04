@@ -166,8 +166,10 @@ describe('Bot (private methods)', () => {
 
   it('_getEl', () => {
     expect(bot._getEl('body')).toBe(document.body);
-    expect(bot._getEl(document.body)).toBe(document.body);
     expect(bot._getEl('buddy')).toBeFalsy();
+    
+    expect(bot._getEl(document.body)).toBe(document.body);
+    expect(bot._getEl(document.createElement('div'))).toBeFalsy();
     expect(bot._getEl(null)).toBeFalsy();
   });
 
