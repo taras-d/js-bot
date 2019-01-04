@@ -120,7 +120,7 @@ describe('Bot (private methods)', () => {
     it('_waitUntil (result does not returned in time)', done => {
       bot._waitUntil(() => null, 200, 500).then(null, err => {
         expect(err).toEqual(jasmine.any(Error));
-        expect(err.message).toBe(`Bot "waitUntil" stopped due to time out`);
+        expect(err.message).toBe(`Wait until "fn" canceled due to time out`);
         done();
       }); 
     });

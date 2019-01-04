@@ -13,9 +13,11 @@ class Bot {
   }
 
   waitFor(el, ms, timeout) {
-    return this._chain(
-      () => this._waitUntil(() => this._getEl(el), ms, timeout)
-    );
+    return this._chain(() => {
+      return this._waitUntil(
+        () => this._getEl(el), ms, timeout, `Wait for "${el}" canceled due to time out`
+      );
+    });
   }
 
   click(el) {
@@ -62,7 +64,7 @@ class Bot {
     return new Promise(res => setTimeout(res, ms));
   }
 
-  _waitUntil(fn, ms = 200, timeout = 5000) {
+  _waitUntil(fn, ms = 200, timeout = 5000, timeoutMsg = 'Wait until "fn" canceled due to time out') {
     return new Promise((res, rej) => {
       let result = fn();
       if (result) {
@@ -81,7 +83,7 @@ class Bot {
         msPassed += ms;
         if (timeout && msPassed >= timeout) {
           clearInterval(timerId);
-          rej(new Error(`Bot "waitUntil" stopped due to time out`));
+          rej(new Error(timeoutMsg));
         }
       }, ms);
     });
