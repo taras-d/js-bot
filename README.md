@@ -4,7 +4,7 @@ This bot designed to simulate user actions
 
 Main purpose is to simplify **routine/repetitive** actions with UI during **development/debugging** process
 
-## Example
+### Simple example
 ```javascript
 new Bot()                           // create bot
   .click('.sidebar-toggle')         // click on sidebar toggle button
@@ -14,7 +14,7 @@ new Bot()                           // create bot
   .exec();                          // execute bot (step by step)
 ```
 
-## API
+### API
 | method | description | return |
 | ------ | ----------- | ------ |
 | `waitMs(ms)` | Wait specified amount of milliseconds | _Bot_ |
