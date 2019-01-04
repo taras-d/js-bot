@@ -98,7 +98,6 @@ class Bot {
     if (event.type === 'input' && params) {
       target.value = params.value;
     }
-
     target.dispatchEvent(event);
 
     return Promise.resolve(target);
@@ -121,12 +120,10 @@ class Bot {
 
   _repeat(arr, times) {
     let res = arr.slice();
-
     while (times > 1) {
       res = res.concat(arr);
       --times;
     }
-
     return res;
   }
 }
